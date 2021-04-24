@@ -19,19 +19,26 @@ namespace HelloWorldFunction
             [SignalR(HubName = "broadcast")] IAsyncCollector<SignalRMessage> signalRMessages,
             ILogger log)
         {
-            var deviceData = JsonConvert.DeserializeObject<DeviceData>(Encoding.UTF8.GetString(message.Body.Array));
-            deviceData.DeviceId = Convert.ToString(message.SystemProperties["iothub-connection-device-id"]);
+            log.LogInformation($"Azure function called for upload image");
+            var personDetails = JsonConvert.DeserializeObject<PersonDetails>(Encoding.UTF8.GetString(message.Body.Array));
 
-            //HttpClient client = new HttpClient();
-            //client.BaseAddress = new Uri("");
-            //var content = new StringContent(JsonConvert.SerializeObject(personDetails), System.Text.Encoding.UTF8, "application/json");
-            //var result = await client.PostAsync("api/AzureFace/IdentifyPerson", content);
-           // result.EnsureSuccessStatusCode();
-            log.LogInformation($"C# IoT Hub trigger function processed a message: {JsonConvert.SerializeObject(deviceData)}");
+            log.LogInformation($"Person details deserialized");
+            personDetails.DeviceId = Convert.ToString(message.SystemProperties["iothub-connection-device-id"]);
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://smartscanner-api.azurewebsites.net");
+            var content = new StringContent(JsonConvert.SerializeObject(personDetails), System.Text.Encoding.UTF8, "application/json");
+            var result = await client.PostAsync("api/smartScanner/getPersonDetails", content);
+
+            result.EnsureSuccessStatusCode();
+            var personAndCovidData = await result.Content.ReadAsStringAsync();
+
+            log.LogInformation($"C# IoT Hub trigger function processed a message: {personAndCovidData}");
+
             await signalRMessages.AddAsync(new SignalRMessage()
             {
                 Target = "notify",
-                Arguments = new[] { JsonConvert.SerializeObject(deviceData) }
+                Arguments = new[] { personAndCovidData }
             });
         }
     }
