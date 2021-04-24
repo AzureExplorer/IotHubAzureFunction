@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AzureSignalRConnectionString": "Endpoint=https://iothub-signalr.service.signalr.net;AccessKey=8xLloOU7z1x6nGazbdxhY7WaG52SAHjY9d4k31/8EHI=;Version=1.0;",
+    "MSDEPLOY_RENAME_LOCKED_FILES": 1,
+    "IoTHubTriggerConnection": "Endpoint=sb://iothub-ns-smartscann-10149685-3e3d094acb.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=2O+4Dq13dh35uhw5pbZK5Ei1uIT4e/CSqSwyN3ONBss=;EntityPath=smartscanner-hub"
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*"
+  }
+}
